@@ -27,9 +27,21 @@ Project eksplorasi arsitektur **real-time notification** menggunakan WebSocket (
 ## Prerequisites
 
 - Node.js >= 18
-- Redis server (running & accessible)
+- Docker & Docker Compose (untuk menjalankan Redis)
 
 ## Setup & Menjalankan
+
+### 0. Jalankan Redis
+
+```bash
+docker compose up -d
+```
+
+Redis akan berjalan di `localhost:6379`. Untuk menghentikan:
+
+```bash
+docker compose down
+```
 
 ### 1. WebSocket Hub
 
