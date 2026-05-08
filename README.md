@@ -31,7 +31,7 @@ Project eksplorasi arsitektur **real-time notification** menggunakan WebSocket (
 
 ## Setup & Menjalankan
 
-### 0. Jalankan Redis
+### 1. Jalankan Redis
 
 ```bash
 docker compose up -d
@@ -43,7 +43,7 @@ Redis akan berjalan di `localhost:6379`. Untuk menghentikan:
 docker compose down
 ```
 
-### 1. WebSocket Hub
+### 2. WebSocket Hub
 
 ```bash
 cd websocket-hub
@@ -62,7 +62,7 @@ npm run start:dev       # berjalan di port 3000
 | `REDIS_PORT`     | `6379`      | Port Redis           |
 | `REDIS_PASSWORD` | -           | Password Redis       |
 
-### 2. Demo Producer
+### 3. Demo Producer
 
 ```bash
 cd demo-producer
@@ -89,7 +89,7 @@ Hasil yang diterima oleh consumer setelah trigger event di atas:
 
 ![Demo Consumer Web](docs/demo_consumer_web.png)
 
-### 3. Demo Consumer
+### 4. Demo Consumer
 
 ```bash
 cd demo-consumer
@@ -100,7 +100,7 @@ npm run start:dev       # berjalan di port 3002
 
 Consumer akan otomatis connect ke Hub dan listen event `order:status_updated`.
 
-### 4. Demo Web
+### 5. Demo Web
 
 Pastikan Hub sudah berjalan di `http://localhost:3000`, lalu pilih salah satu cara berikut:
 
