@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WebSocket Demo (Web)</title>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+        background: #0f172a;
+        color: white;
+        padding: 2rem;
+      }
+      .card {
+        background: #1e293b;
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        margin-bottom: 1rem;
+      }
+      .notification {
+        background: #334155;
+        border-left: 4px solid #38bdf8;
+        padding: 1rem;
+        margin-top: 0.5rem;
+        border-radius: 4px;
+      }
+      .status {
+        font-size: 0.8rem;
+        color: #94a3b8;
+      }
+      .online {
+        color: #4ade80;
+      }
+      .offline {
+        color: #f87171;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <h1>WebSocket Demo (Web)</h1>
+      <div class="card">
+        <p>
+          Status:
+          <span :class="isConnected ? 'online' : 'offline'"
+            >{{ isConnected ? 'Connected' : 'Disconnected' }}</span
+          >
+        </p>
+        <p>User ID: <strong>{{ userId }}</strong></p>
+      </div>
+
+      <div class="card">
+        <h3>Notifications</h3>
+        <div v-if="notifications.length === 0" class="status">
+          Waiting for notifications...
+        </div>
+        <div v-for="(n, i) in notifications" :key="i" class="notification">
+          <strong>{{ n.event }}</strong>
+          <pre style="font-size: 0.75rem; margin: 0.5rem 0">
+{{ n.payload }}</pre
+          >
+          <div class="status">{{ n.timestamp }}</div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const { createApp, ref, onMounted } = Vue;
+
+      createApp({
+        setup() {
+          const isConnected = ref(false);
+          const userId = ref("user-uuid-123");
+          const notifications = ref([]);
+          const socket = ref(null);
+
+          onMounted(() => {
+            // Connect to our Hub
+            socket.value = io("http://localhost:3000", {
+              auth: { token: "DEMO_TOKEN" }, // JWT Guard akan butuh valid token, untuk demo bisa disable guard dulu atau pakai token valid
+              query: { userId: userId.value },
+            });
+
+            socket.value.on("connect", () => {
+              isConnected.value = true;
+              console.log("Connected to WebSocket Hub");
+            });
+
+            socket.value.on("disconnect", () => {
+              isConnected.value = false;
+            });
+
+            // Listen to any event
+            socket.value.onAny((event, payload) => {
+              notifications.value.unshift({
+                event,
+                payload,
+                timestamp: new Date().toLocaleTimeString(),
+              });
+            });
+          });
+
+          return { isConnected, userId, notifications };
+        },
+      }).mount("#app");
+    </script>
+  </body>
+</html>
